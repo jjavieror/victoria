@@ -1,0 +1,5 @@
+index:
+  path: '/{req}'
+  controller: App\Controller\Front\FrontController::index
+  requirements:
+    req: "^(?!api.*$|%admin_path%.*$).*"
