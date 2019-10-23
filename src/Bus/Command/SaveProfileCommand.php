@@ -11,10 +11,10 @@ class SaveProfileCommand
     private $lastName;
     private $email;
     private $dateOfBirth;
-    private $questionOneAnswer;
-    private $questionTwoAnswer;
-    private $questionThreeAnswer;
+    private $offerName;
+    private $image;
     private $acceptTerms;
+    private $acceptCommercial;
 
     /**
      * SaveProfileCommand constructor.
@@ -22,33 +22,33 @@ class SaveProfileCommand
      * @param $lastName
      * @param $email
      * @param $dateOfBirth
-     * @param $questionOneAnswer
-     * @param $questionTwoAnswer
-     * @param $questionThreeAnswer
+     * @param $offerName
+     * @param $image
      * @param $acceptTerms
+     * @param $acceptCommercial
      */
-    public function __construct($firstName, $lastName, $email, $dateOfBirth, $questionOneAnswer, $questionTwoAnswer, $questionThreeAnswer, $acceptTerms)
+    public function __construct($firstName, $lastName, $email, $dateOfBirth, $offerName, $image, $acceptTerms, $acceptCommercial)
     {
 
         Assert::lazy()
-            ->that($firstName, 'firstName')->string()->notEmpty()
-            ->that($lastName, 'lastName')->string()->notEmpty()
-            ->that($email, 'email')->email()
+            ->that($firstName, 'firstName')->string()->notEmpty()->maxLength(64)
+            ->that($lastName, 'lastName')->string()->notEmpty()->maxLength(64)
+            ->that($email, 'email')->email()->maxLength(64)
             ->that($dateOfBirth, 'dateOfBirth')->date('Y-m-d')
-            ->that($questionOneAnswer, 'question1')->notEmpty()
-            ->that($questionTwoAnswer, 'question2')->notEmpty()
-            ->that($questionThreeAnswer, 'question3')->notEmpty()
+            ->that($offerName, 'offerName')->string()->notEmpty()->maxLength(64)
+            ->that($image, 'image')->base64()
             ->that($acceptTerms, 'acceptTerms')->boolean()->eq(true)
+            ->that($acceptCommercial, 'acceptCommercial')->boolean()
             ->verifyNow();
 
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->email = $email;
         $this->dateOfBirth = $dateOfBirth;
-        $this->questionOneAnswer = $questionOneAnswer;
-        $this->questionTwoAnswer = $questionTwoAnswer;
-        $this->questionThreeAnswer = $questionThreeAnswer;
+        $this->offerName = $offerName;
+        $this->image = $image;
         $this->acceptTerms = $acceptTerms;
+        $this->acceptCommercial = $acceptCommercial;
     }
 
     /**
@@ -86,25 +86,17 @@ class SaveProfileCommand
     /**
      * @return mixed
      */
-    public function getQuestionOneAnswer()
+    public function getOfferName()
     {
-        return $this->questionOneAnswer;
+        return $this->offerName;
     }
 
     /**
      * @return mixed
      */
-    public function getQuestionTwoAnswer()
+    public function getImage()
     {
-        return $this->questionTwoAnswer;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getQuestionThreeAnswer()
-    {
-        return $this->questionThreeAnswer;
+        return $this->image;
     }
 
     /**
@@ -113,6 +105,14 @@ class SaveProfileCommand
     public function getAcceptTerms()
     {
         return $this->acceptTerms;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAcceptCommercial()
+    {
+        return $this->acceptCommercial;
     }
 
 }

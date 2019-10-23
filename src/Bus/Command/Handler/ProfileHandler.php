@@ -5,7 +5,7 @@ namespace App\Bus\Command\Handler;
 use App\Bus\Command\SaveProfileCommand;
 use App\Entity\Profile;
 use App\Repository\ProfileRepository;
-use App\Service\MailService;
+use App\Service\ImageService;
 
 class ProfileHandler
 {
@@ -16,14 +16,14 @@ class ProfileHandler
     protected $profileRepository;
 
     /**
-     * @var MailService
+     * @var ImageService
      */
-    protected $mailService;
+    protected $imageService;
 
-    public function __construct(ProfileRepository $profileRepository, MailService $mailService)
+    public function __construct(ProfileRepository $profileRepository, ImageService $imageService)
     {
         $this->profileRepository = $profileRepository;
-        $this->mailService = $mailService;
+        $this->imageService = $imageService;
     }
 
     /**
@@ -33,9 +33,11 @@ class ProfileHandler
     public function handleSaveProfileCommand(SaveProfileCommand $command)
     {
         $profile = Profile::createFromCommand($command);
-        $this->profileRepository->saveProfile($profile);
 
-        $this->mailService->subscribeUser($command->getEmail());
+        $fileName = $this->imageService->store($command->getImage(), true, $profile->getOfferVariation());
+        $profile->setImage($fileName);
+
+        $this->profileRepository->saveProfile($profile);
 
         return $profile->getUuid();
     }
